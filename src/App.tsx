@@ -528,7 +528,7 @@ const BusinessCenter = () => {
               <div className="flex items-center gap-4 mb-6">
                 <img src="https://picsum.photos/seed/ceo/100/100" alt="CEO" className="w-16 h-16 rounded-full border-2 border-valtrix-gold" referrerPolicy="no-referrer" />
                 <div>
-                  <p className="font-bold text-xl">Carlos Rodríguez</p>
+                  <p className="font-bold text-xl">Jesus Guillermo Valenzuela</p>
                   <p className="text-valtrix-gold text-sm font-semibold">Gerente Comercial Senior</p>
                 </div>
               </div>
