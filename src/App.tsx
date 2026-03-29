@@ -33,9 +33,17 @@ const Header = () => {
     <header className={`fixed w-full z-50 transition-all duration-300 ${scrolled ? 'bg-white shadow-md py-2' : 'bg-transparent py-4'}`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center">
-          <div className="flex flex-col">
-            <span className={`text-2xl font-bold tracking-tighter ${scrolled ? 'text-valtrix-blue' : 'text-white'}`}>VALTRIX SAS</span>
-            <span className={`text-[10px] font-semibold tracking-[0.2em] uppercase ${scrolled ? 'text-valtrix-gray' : 'text-gray-200'}`}>Sistemas de Información</span>
+          <div className="flex items-center gap-3">
+            <img 
+              src="https://i.imgur.com/noXxWB5.jpeg" 
+              alt="VALTRIX SAS Logo" 
+              className="h-10 w-auto rounded-lg shadow-sm"
+              referrerPolicy="no-referrer"
+            />
+            <div className="flex flex-col">
+              <span className={`text-xl font-bold tracking-tighter ${scrolled ? 'text-valtrix-blue' : 'text-white'}`}>VALTRIX SAS</span>
+              <span className={`text-[10px] font-semibold tracking-[0.2em] uppercase ${scrolled ? 'text-valtrix-gray' : 'text-gray-200'}`}>Sistemas de Información</span>
+            </div>
           </div>
 
           {/* Desktop Nav */}
@@ -545,9 +553,17 @@ const Footer = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
           <div className="col-span-1 lg:col-span-1">
-            <div className="flex flex-col mb-6">
-              <span className="text-2xl font-bold tracking-tighter text-white">VALTRIX SAS</span>
-              <span className="text-[10px] font-semibold tracking-[0.2em] uppercase text-valtrix-gold">Sistemas de Información</span>
+            <div className="flex items-center gap-3 mb-6">
+              <img 
+                src="https://i.imgur.com/noXxWB5.jpeg" 
+                alt="VALTRIX SAS Logo" 
+                className="h-12 w-auto rounded-lg"
+                referrerPolicy="no-referrer"
+              />
+              <div className="flex flex-col">
+                <span className="text-xl font-bold tracking-tighter text-white">VALTRIX SAS</span>
+                <span className="text-[10px] font-semibold tracking-[0.2em] uppercase text-valtrix-gold">Sistemas de Información</span>
+              </div>
             </div>
             <p className="text-gray-400 text-sm leading-relaxed mb-6">
               "Aliados estratégicos para cumplir tus sueños". Más de 10 años de experiencia empresarial brindando soluciones integrales.
