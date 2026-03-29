@@ -1,0 +1,13 @@
+@import "tailwindcss";
+
+@theme {
+  --color-valtrix-blue: #1E40AF;
+  --color-valtrix-gold: #D97706;
+  --color-valtrix-gray: #374151;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+}
