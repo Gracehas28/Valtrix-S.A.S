@@ -8,10 +8,16 @@ import {
   User, Send, FileText
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
+import { CasosDeExito } from './components/CasosDeExito';
 
 // --- Components ---
 
-const Header = () => {
+interface HeaderProps {
+  currentView: 'home' | 'casos-de-exito';
+  onNavigate: (view: 'home' | 'casos-de-exito', hash?: string) => void;
+}
+
+const Header: React.FC<HeaderProps> = ({ currentView, onNavigate }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
@@ -21,48 +27,74 @@ const Header = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  const isSolid = scrolled || currentView === 'casos-de-exito';
+
   const navLinks = [
     { name: 'TEXTILES', href: '#textiles' },
     { name: 'TECNOLOGÍA', href: '#tecnologia' },
     { name: 'VEHÍCULOS', href: '#vehiculos' },
-    { name: 'LOGÍSTICA', href: '#logistica' },
+    { name: 'CASOS DE ÉXITO', isCasos: true },
     { name: 'COTIZACIÓN', href: '#cotizacion' },
     { name: 'CONTACTO', href: '#contacto' },
   ];
 
+  const handleLinkClick = (link: { name: string; href?: string; isCasos?: boolean }) => {
+    setIsOpen(false);
+    if (link.isCasos) {
+      onNavigate('casos-de-exito');
+    } else if (link.href) {
+      onNavigate('home', link.href);
+    }
+  };
+
   return (
-    <header className={`fixed w-full z-50 transition-all duration-300 ${scrolled ? 'bg-white shadow-md py-2' : 'bg-transparent py-4'}`}>
+    <header className={`fixed w-full z-50 transition-all duration-300 ${isSolid ? 'bg-white shadow-md py-2' : 'bg-transparent py-4'}`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center">
-          <div className="flex items-center gap-3">
+          <div 
+            onClick={() => onNavigate('home')}
+            className="flex items-center gap-3 cursor-pointer group"
+          >
             <img 
               src="https://i.imgur.com/noXxWB5.jpeg" 
               alt="VALTRIX SAS Logo" 
-              className="h-10 w-auto rounded-lg shadow-sm"
+              className="h-10 w-auto rounded-lg shadow-sm transition-transform group-hover:scale-105"
               referrerPolicy="no-referrer"
             />
             <div className="flex flex-col">
-              <span className={`text-xl font-bold tracking-tighter ${scrolled ? 'text-valtrix-blue' : 'text-white'}`}>VALTRIX SAS</span>
-              <span className={`text-[10px] font-semibold tracking-[0.2em] uppercase ${scrolled ? 'text-valtrix-gray' : 'text-gray-200'}`}>Sistemas de Información</span>
+              <span className={`text-xl font-bold tracking-tighter transition-colors ${isSolid ? 'text-valtrix-blue' : 'text-white'}`}>VALTRIX SAS</span>
+              <span className={`text-[10px] font-semibold tracking-[0.2em] uppercase ${isSolid ? 'text-valtrix-gray' : 'text-gray-200'}`}>Sistemas de Información</span>
             </div>
           </div>
 
           {/* Desktop Nav */}
-          <nav className="hidden md:flex space-x-8">
-            {navLinks.map((link) => (
-              <a
-                key={link.name}
-                href={link.href}
-                className={`text-sm font-bold hover:text-valtrix-gold transition-colors ${scrolled ? 'text-valtrix-gray' : 'text-white'}`}
-              >
-                {link.name}
-              </a>
-            ))}
+          <nav className="hidden md:flex space-x-7 items-center">
+            {navLinks.map((link) => {
+              const isActiveCasos = link.isCasos && currentView === 'casos-de-exito';
+              return (
+                <button
+                  key={link.name}
+                  onClick={() => handleLinkClick(link)}
+                  className={`text-sm font-bold transition-all cursor-pointer relative py-1 ${
+                    isActiveCasos
+                      ? 'text-valtrix-gold'
+                      : isSolid 
+                        ? 'text-valtrix-gray hover:text-valtrix-gold' 
+                        : 'text-white hover:text-valtrix-gold'
+                  }`}
+                >
+                  {link.name}
+                  {isActiveCasos && (
+                    <span className="absolute bottom-0 left-0 w-full h-0.5 bg-valtrix-gold rounded-full" />
+                  )}
+                </button>
+              );
+            })}
           </nav>
 
           {/* Mobile Menu Button */}
           <div className="md:hidden">
-            <button onClick={() => setIsOpen(!isOpen)} className={scrolled ? 'text-valtrix-blue' : 'text-white'}>
+            <button onClick={() => setIsOpen(!isOpen)} className={isSolid ? 'text-valtrix-blue' : 'text-white'}>
               {isOpen ? <X size={28} /> : <Menu size={28} />}
             </button>
           </div>
@@ -76,18 +108,17 @@ const Header = () => {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            className="md:hidden bg-white border-t border-gray-100 overflow-hidden"
+            className="md:hidden bg-white border-t border-gray-100 overflow-hidden shadow-xl"
           >
             <div className="px-4 pt-2 pb-6 space-y-1">
               {navLinks.map((link) => (
-                <a
+                <button
                   key={link.name}
-                  href={link.href}
-                  onClick={() => setIsOpen(false)}
-                  className="block px-3 py-4 text-base font-bold text-valtrix-gray hover:bg-gray-50 hover:text-valtrix-blue"
+                  onClick={() => handleLinkClick(link)}
+                  className="w-full text-left block px-3 py-3.5 text-base font-bold text-valtrix-gray hover:bg-gray-50 hover:text-valtrix-blue border-b border-gray-50"
                 >
                   {link.name}
-                </a>
+                </button>
               ))}
             </div>
           </motion.div>
@@ -97,7 +128,7 @@ const Header = () => {
   );
 };
 
-const Hero = () => {
+const Hero = ({ onNavigateToCasos }: { onNavigateToCasos?: () => void }) => {
   return (
     <section className="relative min-h-screen flex items-center pt-20 overflow-hidden bg-valtrix-gray">
       {/* Background Overlay */}
@@ -140,12 +171,15 @@ const Hero = () => {
             </div>
 
             <div className="flex flex-wrap gap-4">
-              <a href="#cotizacion" className="bg-valtrix-gold hover:bg-amber-600 text-white px-8 py-4 rounded-full font-bold transition-all transform hover:scale-105 flex items-center gap-2 shadow-lg">
+              <a href="#cotizacion" className="bg-valtrix-gold hover:bg-amber-600 text-white px-8 py-4 rounded-full font-bold transition-all transform hover:scale-105 flex items-center gap-2 shadow-lg cursor-pointer">
                 COTIZAR AHORA <ChevronRight size={20} />
               </a>
-              <a href="#experiencia" className="bg-white/10 hover:bg-white/20 text-white border border-white/30 px-8 py-4 rounded-full font-bold transition-all backdrop-blur-md">
+              <button 
+                onClick={onNavigateToCasos}
+                className="bg-white/10 hover:bg-white/20 text-white border border-white/30 px-8 py-4 rounded-full font-bold transition-all backdrop-blur-md cursor-pointer"
+              >
                 CONOCER NUESTRA TRAYECTORIA
-              </a>
+              </button>
             </div>
           </motion.div>
           
@@ -250,7 +284,7 @@ const Services = () => {
   );
 };
 
-const Experience = () => {
+const Experience = ({ onNavigateToCasos }: { onNavigateToCasos?: () => void }) => {
   const stats = [
     { label: 'Empresarios Satisfechos', value: '+500', icon: <Users size={32} /> },
     { label: 'Importaciones Exitosas', value: '+1000', icon: <Globe size={32} /> },
@@ -288,9 +322,29 @@ const Experience = () => {
           ))}
         </div>
 
+        <div className="mb-10 text-center">
+          <p className="text-xs uppercase font-extrabold tracking-widest text-blue-200 mb-4">
+            Proyección y Casos de Estudio con Líderes de la Industria
+          </p>
+          <div className="flex flex-wrap justify-center items-center gap-3 sm:gap-4">
+            {['Alpina', 'Grupo Nutresa', 'Grupo Éxito', 'Postobón', 'Tecnoglass'].map((brand) => (
+              <span 
+                key={brand}
+                onClick={onNavigateToCasos}
+                className="px-4 py-1.5 rounded-full bg-white/10 hover:bg-white/20 text-white font-bold text-xs sm:text-sm border border-white/20 transition-all cursor-pointer shadow-xs"
+              >
+                {brand}
+              </span>
+            ))}
+          </div>
+        </div>
+
         <div className="flex justify-center">
-          <button className="bg-white text-valtrix-blue hover:bg-valtrix-gold hover:text-white px-10 py-4 rounded-full font-bold transition-all shadow-xl flex items-center gap-2">
-            CONOCER CASOS DE ÉXITO <ArrowRight size={20} />
+          <button 
+            onClick={onNavigateToCasos}
+            className="bg-white text-valtrix-blue hover:bg-valtrix-gold hover:text-white px-10 py-4 rounded-full font-bold transition-all shadow-xl flex items-center gap-2 cursor-pointer transform hover:-translate-y-0.5"
+          >
+            CONOCER CASOS DE ÉXITO Y TRAYECTORIA <ArrowRight size={20} />
           </button>
         </div>
       </div>
@@ -619,7 +673,7 @@ const BusinessCenter = () => {
   );
 };
 
-const Footer = () => {
+const Footer = ({ onNavigateToCasos }: { onNavigateToCasos?: () => void }) => {
   return (
     <footer id="contacto" className="bg-valtrix-gray text-white pt-20 pb-10 border-t border-white/5">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -701,6 +755,12 @@ const Footer = () => {
               <li>• Seguimiento 24/7</li>
               <li>• Asesoría comercial</li>
               <li>• Financiamiento</li>
+              <li 
+                onClick={onNavigateToCasos}
+                className="text-valtrix-gold hover:underline cursor-pointer font-bold flex items-center gap-1.5 transition-colors pt-2"
+              >
+                • Ver Casos de Éxito Empresariales →
+              </li>
             </ul>
           </div>
         </div>
@@ -732,18 +792,71 @@ const Footer = () => {
 // --- Main App ---
 
 export default function App() {
+  const [currentView, setCurrentView] = useState<'home' | 'casos-de-exito'>('home');
+
+  useEffect(() => {
+    const handleHash = () => {
+      if (window.location.hash === '#casos-de-exito') {
+        setCurrentView('casos-de-exito');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } else if (window.location.hash === '' || window.location.hash === '#') {
+        if (currentView === 'casos-de-exito') {
+          setCurrentView('home');
+        }
+      }
+    };
+
+    if (window.location.hash === '#casos-de-exito') {
+      setCurrentView('casos-de-exito');
+    }
+
+    window.addEventListener('hashchange', handleHash);
+    return () => window.removeEventListener('hashchange', handleHash);
+  }, [currentView]);
+
+  const navigateTo = (view: 'home' | 'casos-de-exito', hash?: string) => {
+    if (view === 'casos-de-exito') {
+      setCurrentView('casos-de-exito');
+      window.location.hash = '#casos-de-exito';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else {
+      setCurrentView('home');
+      if (hash) {
+        window.location.hash = hash;
+        setTimeout(() => {
+          const el = document.querySelector(hash);
+          if (el) {
+            el.scrollIntoView({ behavior: 'smooth' });
+          }
+        }, 80);
+      } else {
+        window.location.hash = '';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    }
+  };
+
   return (
-    <div className="font-sans text-valtrix-gray bg-white selection:bg-valtrix-gold selection:text-white">
-      <Header />
-      <main>
-        <Hero />
-        <Services />
-        <Experience />
-        <Timeline />
-        <QuotationForm />
-        <BusinessCenter />
-      </main>
-      <Footer />
+    <div className="font-sans text-valtrix-gray bg-white selection:bg-valtrix-gold selection:text-white min-h-screen flex flex-col justify-between">
+      <Header currentView={currentView} onNavigate={navigateTo} />
+      {currentView === 'casos-de-exito' ? (
+        <main className="flex-1">
+          <CasosDeExito 
+            onBackToHome={() => navigateTo('home')} 
+            onGoToQuotation={() => navigateTo('home', '#cotizacion')} 
+          />
+        </main>
+      ) : (
+        <main className="flex-1">
+          <Hero onNavigateToCasos={() => navigateTo('casos-de-exito')} />
+          <Services />
+          <Experience onNavigateToCasos={() => navigateTo('casos-de-exito')} />
+          <Timeline />
+          <QuotationForm />
+          <BusinessCenter />
+        </main>
+      )}
+      <Footer onNavigateToCasos={() => navigateTo('casos-de-exito')} />
     </div>
   );
 }

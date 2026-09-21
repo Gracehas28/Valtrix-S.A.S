@@ -1,5 +1,6 @@
 {
   "name": "VALTRIX SAS - Sistemas de Información",
   "description": "Aliados estratégicos para cumplir tus sueños empresariales. Especialistas en textiles, tecnología y vehículos corporativos.",
-  "requestFramePermissions": []
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }
