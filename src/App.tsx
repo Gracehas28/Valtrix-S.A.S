@@ -213,7 +213,7 @@ const Services = () => {
       icon: <Factory size={40} />,
       items: ['Materiales industriales', 'Volúmenes mayoristas', 'Importación directa'],
       cta: 'Ver Catálogo',
-      img: 'https://images.unsplash.com/photo-1558444479-c848517d736e?q=80&w=2070&auto=format&fit=crop'
+      img: 'https://images.unsplash.com/photo-1584917865442-de89df76afd3?q=80&w=1000&auto=format&fit=crop'
     },
     {
       id: 'tecnologia',
@@ -257,6 +257,11 @@ const Services = () => {
                   alt={service.title} 
                   className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                   referrerPolicy="no-referrer"
+                  onError={(e) => {
+                    const target = e.currentTarget;
+                    target.onerror = null;
+                    target.src = 'https://images.unsplash.com/photo-1528458909336-e7a0adfed0a5?q=80&w=1000&auto=format&fit=crop';
+                  }}
                 />
               </div>
               <div className="p-8">
