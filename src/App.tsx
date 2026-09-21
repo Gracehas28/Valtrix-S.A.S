@@ -4,7 +4,8 @@ import {
   CheckCircle2, TrendingUp, Globe, Trophy, 
   Mail, MapPin, Phone, MessageSquare, 
   ChevronRight, ArrowRight, Calendar, Users,
-  Award, Building2, Briefcase, Clock
+  Award, Building2, Briefcase, Clock,
+  User, Send, FileText
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 
@@ -118,7 +119,7 @@ const Hero = () => {
             transition={{ duration: 0.8 }}
           >
             <h1 className="text-4xl md:text-6xl font-extrabold text-white leading-tight mb-6">
-              VALTRIX SAS: <span className="text-valtrix-gold">Más de 10 Años</span> Cumpliendo Sueños Empresariales
+              VALTRIX SAS: <span className="text-valtrix-gold">Tu operación internacional</span>, nuestra visión estratégica.
             </h1>
             <p className="text-xl text-gray-200 mb-8 max-w-xl">
               Somos sus aliados estratégicos en textiles premium, soluciones tecnológicas avanzadas y vehículos de lujo. Logística puerta a puerta desde el exterior hasta Colombia para empresarios visionarios.
@@ -298,143 +299,214 @@ const Experience = () => {
 };
 
 const QuotationForm = () => {
-  const [activeTab, setActiveTab] = useState('textiles');
+  const [formData, setFormData] = useState({
+    nombreCompleto: '',
+    correo: '',
+    telefono: '',
+    direccion: '',
+    servicio: 'Textiles Industriales',
+    proyecto: ''
+  });
+  const [submitted, setSubmitted] = useState(false);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setSubmitted(true);
+  };
+
+  const resetForm = () => {
+    setFormData({
+      nombreCompleto: '',
+      correo: '',
+      telefono: '',
+      direccion: '',
+      servicio: 'Textiles Industriales',
+      proyecto: ''
+    });
+    setSubmitted(false);
+  };
 
   return (
     <section id="cotizacion" className="py-24 bg-gray-50">
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="bg-white rounded-3xl shadow-2xl overflow-hidden border border-gray-100">
-          <div className="bg-valtrix-gray p-8 text-center text-white">
-            <h2 className="text-3xl font-bold mb-2">COTIZACIÓN EMPRESARIAL</h2>
-            <p className="text-gray-400">VALTRIX SAS - SISTEMAS DE INFORMACIÓN</p>
+          <div className="bg-gradient-to-r from-valtrix-blue to-blue-900 p-8 text-center text-white relative">
+            <span className="inline-block px-4 py-1 rounded-full bg-valtrix-gold/20 text-valtrix-gold text-xs font-bold uppercase tracking-wider mb-2 border border-valtrix-gold/30">
+              Atención Personalizada B2B
+            </span>
+            <h2 className="text-3xl md:text-4xl font-extrabold mb-3">COTIZACIÓN EMPRESARIAL A TU MEDIDA</h2>
+            <p className="text-blue-100 max-w-2xl mx-auto text-base">
+              Déjanos tu proyecto y te cotizamos sobre el proyecto que requieras a tu medida.
+            </p>
           </div>
 
-          <div className="p-8">
-            <div className="grid grid-cols-2 gap-6 mb-8">
-              <div>
-                <label className="block text-xs font-bold text-valtrix-gray uppercase tracking-wider mb-2">Empresa</label>
-                <input type="text" className="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 focus:ring-2 focus:ring-valtrix-blue outline-none transition-all" placeholder="Nombre de la compañía" />
-              </div>
-              <div>
-                <label className="block text-xs font-bold text-valtrix-gray uppercase tracking-wider mb-2">NIT</label>
-                <input type="text" className="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 focus:ring-2 focus:ring-valtrix-blue outline-none transition-all" placeholder="Número de Identificación Tributaria" />
-              </div>
-              <div>
-                <label className="block text-xs font-bold text-valtrix-gray uppercase tracking-wider mb-2">Contacto</label>
-                <input type="text" className="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 focus:ring-2 focus:ring-valtrix-blue outline-none transition-all" placeholder="Nombre completo" />
-              </div>
-              <div>
-                <label className="block text-xs font-bold text-valtrix-gray uppercase tracking-wider mb-2">Cargo</label>
-                <input type="text" className="w-full bg-gray-50 border border-gray-200 rounded-lg px-4 py-3 focus:ring-2 focus:ring-valtrix-blue outline-none transition-all" placeholder="Cargo ejecutivo" />
-              </div>
-            </div>
-
-            <div className="mb-8">
-              <label className="block text-xs font-bold text-valtrix-gray uppercase tracking-wider mb-4">Servicio Requerido</label>
-              <div className="flex flex-wrap gap-4">
-                {[
-                  { id: 'textiles', label: 'Textiles Industriales', icon: <Factory size={18} /> },
-                  { id: 'tecnologia', label: 'Soluciones Tecnológicas', icon: <Laptop size={18} /> },
-                  { id: 'vehiculos', label: 'Vehículos Corporativos', icon: <Car size={18} /> }
-                ].map((tab) => (
-                  <button
-                    key={tab.id}
-                    onClick={() => setActiveTab(tab.id)}
-                    className={`flex items-center gap-2 px-6 py-3 rounded-xl font-bold transition-all ${activeTab === tab.id ? 'bg-valtrix-blue text-white shadow-lg' : 'bg-gray-100 text-gray-500 hover:bg-gray-200'}`}
-                  >
-                    {tab.icon} {tab.label}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <AnimatePresence mode="wait">
+          <div className="p-8 md:p-12">
+            {submitted ? (
               <motion.div
-                key={activeTab}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                className="bg-gray-50 p-6 rounded-2xl border border-gray-200 mb-8"
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="text-center py-10 px-4"
               >
-                {activeTab === 'textiles' && (
-                  <div className="grid md:grid-cols-2 gap-4">
-                    <select className="bg-white border border-gray-200 rounded-lg px-4 py-3 outline-none">
-                      <option>Tipo de material (Industrial/Confección/Técnico)</option>
-                      <option>Industrial</option>
-                      <option>Confección</option>
-                      <option>Técnico</option>
-                    </select>
-                    <input type="text" className="bg-white border border-gray-200 rounded-lg px-4 py-3 outline-none" placeholder="Volúmenes (Contenedores/Toneladas)" />
-                    <select className="bg-white border border-gray-200 rounded-lg px-4 py-3 outline-none">
-                      <option>Periodicidad de importación</option>
-                      <option>Única vez</option>
-                      <option>Mensual</option>
-                      <option>Trimestral</option>
-                    </select>
-                    <select className="bg-white border border-gray-200 rounded-lg px-4 py-3 outline-none">
-                      <option>Términos comerciales (FOB/CIF)</option>
-                      <option>FOB</option>
-                      <option>CIF</option>
-                      <option>DDP</option>
-                    </select>
-                  </div>
-                )}
-                {activeTab === 'tecnologia' && (
-                  <div className="grid md:grid-cols-2 gap-4">
-                    <select className="bg-white border border-gray-200 rounded-lg px-4 py-3 outline-none">
-                      <option>Tipo de solución</option>
-                      <option>ERP</option>
-                      <option>CRM</option>
-                      <option>E-commerce</option>
-                      <option>Custom Software</option>
-                    </select>
-                    <input type="text" className="bg-white border border-gray-200 rounded-lg px-4 py-3 outline-none" placeholder="Tamaño de empresa (Empleados)" />
-                    <input type="text" className="bg-white border border-gray-200 rounded-lg px-4 py-3 outline-none" placeholder="Integración con sistemas existentes" />
-                    <select className="bg-white border border-gray-200 rounded-lg px-4 py-3 outline-none">
-                      <option>Soporte y mantenimiento</option>
-                      <option>Básico 8/5</option>
-                      <option>Premium 24/7</option>
-                    </select>
-                  </div>
-                )}
-                {activeTab === 'vehiculos' && (
-                  <div className="grid md:grid-cols-2 gap-4">
-                    <select className="bg-white border border-gray-200 rounded-lg px-4 py-3 outline-none">
-                      <option>Tipo de flota</option>
-                      <option>Ejecutiva</option>
-                      <option>Operativa</option>
-                      <option>Especializada</option>
-                    </select>
-                    <input type="number" className="bg-white border border-gray-200 rounded-lg px-4 py-3 outline-none" placeholder="Cantidad de vehículos" />
-                    <input type="text" className="bg-white border border-gray-200 rounded-lg px-4 py-3 outline-none" placeholder="Marca y especificaciones" />
-                    <select className="bg-white border border-gray-200 rounded-lg px-4 py-3 outline-none">
-                      <option>Financiamiento corporativo</option>
-                      <option>Leasing</option>
-                      <option>Crédito Directo</option>
-                      <option>Contado</option>
-                    </select>
-                  </div>
-                )}
-              </motion.div>
-            </AnimatePresence>
-
-            <div className="grid sm:grid-cols-2 gap-4 mb-8">
-              {[
-                'Asesoría empresarial incluida',
-                'Términos comerciales flexibles',
-                'Financiamiento corporativo disponible',
-                'Soporte post-venta garantizado'
-              ].map((item, i) => (
-                <div key={i} className="flex items-center gap-2 text-sm text-gray-600 font-medium">
-                  <CheckCircle2 className="text-valtrix-blue" size={16} />
-                  {item}
+                <div className="w-20 h-20 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-6 shadow-md">
+                  <CheckCircle2 size={44} />
                 </div>
-              ))}
-            </div>
+                <h3 className="text-2xl font-bold text-valtrix-gray mb-3">
+                  ¡Solicitud de Cotización Recibida!
+                </h3>
+                <p className="text-gray-600 max-w-lg mx-auto mb-6 leading-relaxed">
+                  Estimado/a <strong className="text-valtrix-blue">{formData.nombreCompleto || 'Cliente'}</strong>, hemos recibido con éxito los datos de su proyecto. Un asesor corporativo de <strong>VALTRIX SAS</strong> revisará sus requerimientos y se comunicará a <strong>{formData.correo}</strong> o al teléfono <strong>{formData.telefono}</strong> con una propuesta económica adaptada a su medida.
+                </p>
+                <div className="bg-gray-50 border border-gray-200 rounded-xl p-4 max-w-md mx-auto mb-8 text-left text-sm text-gray-700">
+                  <p className="font-semibold text-valtrix-gray mb-2">Resumen de solicitud:</p>
+                  <p><strong>Servicio:</strong> {formData.servicio}</p>
+                  <p><strong>Dirección:</strong> {formData.direccion || 'No especificada'}</p>
+                  <p className="truncate"><strong>Proyecto:</strong> {formData.proyecto}</p>
+                </div>
+                <button
+                  onClick={resetForm}
+                  className="bg-valtrix-blue hover:bg-blue-800 text-white font-bold px-8 py-3.5 rounded-xl transition-all shadow-md"
+                >
+                  Enviar otra cotización
+                </button>
+              </motion.div>
+            ) : (
+              <form onSubmit={handleSubmit} className="space-y-6">
+                <div className="grid md:grid-cols-2 gap-6">
+                  {/* Nombre completo */}
+                  <div>
+                    <label className="flex items-center gap-2 text-xs font-bold text-valtrix-gray uppercase tracking-wider mb-2">
+                      <User size={15} className="text-valtrix-blue" />
+                      Nombre Completo <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      value={formData.nombreCompleto}
+                      onChange={(e) => setFormData({ ...formData, nombreCompleto: e.target.value })}
+                      className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3.5 text-valtrix-gray placeholder-gray-400 focus:bg-white focus:border-valtrix-blue focus:ring-2 focus:ring-valtrix-blue/20 outline-none transition-all text-sm font-medium"
+                      placeholder="Ej: Ing. Carlos Morales"
+                    />
+                  </div>
 
-            <button className="w-full bg-valtrix-gold hover:bg-amber-600 text-white py-5 rounded-2xl font-black text-lg shadow-xl transition-all transform hover:-translate-y-1">
-              SOLICITAR COTIZACIÓN EMPRESARIAL
-            </button>
+                  {/* Correo */}
+                  <div>
+                    <label className="flex items-center gap-2 text-xs font-bold text-valtrix-gray uppercase tracking-wider mb-2">
+                      <Mail size={15} className="text-valtrix-blue" />
+                      Correo Electrónico <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="email"
+                      required
+                      value={formData.correo}
+                      onChange={(e) => setFormData({ ...formData, correo: e.target.value })}
+                      className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3.5 text-valtrix-gray placeholder-gray-400 focus:bg-white focus:border-valtrix-blue focus:ring-2 focus:ring-valtrix-blue/20 outline-none transition-all text-sm font-medium"
+                      placeholder="ejemplo@empresa.com"
+                    />
+                  </div>
+
+                  {/* Teléfono */}
+                  <div>
+                    <label className="flex items-center gap-2 text-xs font-bold text-valtrix-gray uppercase tracking-wider mb-2">
+                      <Phone size={15} className="text-valtrix-blue" />
+                      Teléfono / Móvil <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="tel"
+                      required
+                      value={formData.telefono}
+                      onChange={(e) => setFormData({ ...formData, telefono: e.target.value })}
+                      className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3.5 text-valtrix-gray placeholder-gray-400 focus:bg-white focus:border-valtrix-blue focus:ring-2 focus:ring-valtrix-blue/20 outline-none transition-all text-sm font-medium"
+                      placeholder="+57 (300) 123-4567"
+                    />
+                  </div>
+
+                  {/* Dirección */}
+                  <div>
+                    <label className="flex items-center gap-2 text-xs font-bold text-valtrix-gray uppercase tracking-wider mb-2">
+                      <MapPin size={15} className="text-valtrix-blue" />
+                      Dirección <span className="text-red-500">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      value={formData.direccion}
+                      onChange={(e) => setFormData({ ...formData, direccion: e.target.value })}
+                      className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3.5 text-valtrix-gray placeholder-gray-400 focus:bg-white focus:border-valtrix-blue focus:ring-2 focus:ring-valtrix-blue/20 outline-none transition-all text-sm font-medium"
+                      placeholder="Ciudad, departamento y dirección de sede"
+                    />
+                  </div>
+                </div>
+
+                {/* Selección de división */}
+                <div>
+                  <label className="block text-xs font-bold text-valtrix-gray uppercase tracking-wider mb-2">
+                    Línea de Interés
+                  </label>
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                    {[
+                      { id: 'Textiles Industriales', label: 'Textiles', icon: <Factory size={16} /> },
+                      { id: 'Tecnología Empresarial', label: 'Tecnología', icon: <Laptop size={16} /> },
+                      { id: 'Vehículos Corporativos', label: 'Vehículos', icon: <Car size={16} /> },
+                      { id: 'Logística & Importación', label: 'Logística', icon: <Ship size={16} /> },
+                    ].map((item) => (
+                      <button
+                        type="button"
+                        key={item.id}
+                        onClick={() => setFormData({ ...formData, servicio: item.id })}
+                        className={`flex items-center justify-center gap-2 py-3 px-3 rounded-xl font-bold text-xs border transition-all ${
+                          formData.servicio === item.id
+                            ? 'bg-valtrix-blue text-white border-valtrix-blue shadow-md'
+                            : 'bg-gray-50 text-gray-600 border-gray-200 hover:bg-gray-100'
+                        }`}
+                      >
+                        {item.icon}
+                        <span>{item.label}</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Déjanos tu proyecto y te cotizamos sobre el proyecto que requieras a tu medida */}
+                <div>
+                  <label className="flex items-center gap-2 text-xs font-bold text-valtrix-gray uppercase tracking-wider mb-2">
+                    <FileText size={15} className="text-valtrix-gold" />
+                    Déjanos tu proyecto y te cotizamos sobre el proyecto que requieras a tu medida <span className="text-red-500">*</span>
+                  </label>
+                  <textarea
+                    required
+                    rows={4}
+                    value={formData.proyecto}
+                    onChange={(e) => setFormData({ ...formData, proyecto: e.target.value })}
+                    className="w-full bg-gray-50 border border-gray-200 rounded-xl p-4 text-valtrix-gray placeholder-gray-400 focus:bg-white focus:border-valtrix-blue focus:ring-2 focus:ring-valtrix-blue/20 outline-none transition-all text-sm font-medium resize-none"
+                    placeholder="Describe los detalles de tu proyecto: especificaciones técnicas, volumen o cantidades, tiempos requeridos, destino de entrega o cualquier requerimiento a tu medida..."
+                  ></textarea>
+                </div>
+
+                {/* Beneficios */}
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 py-2">
+                  {[
+                    'Asesoría empresarial',
+                    'Términos comerciales flexibles',
+                    'Financiamiento disponible',
+                    'Respuesta en menos de 24h'
+                  ].map((item, i) => (
+                    <div key={i} className="flex items-center gap-1.5 text-xs text-gray-600 font-medium">
+                      <CheckCircle2 className="text-valtrix-blue shrink-0" size={15} />
+                      <span>{item}</span>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Botón de envío */}
+                <button
+                  type="submit"
+                  className="w-full bg-valtrix-gold hover:bg-amber-600 text-white py-4 px-6 rounded-2xl font-black text-base md:text-lg shadow-xl hover:shadow-2xl transition-all transform hover:-translate-y-0.5 flex items-center justify-center gap-3"
+                >
+                  <Send size={20} />
+                  SOLICITAR COTIZACIÓN A TU MEDIDA
+                </button>
+              </form>
+            )}
           </div>
         </div>
       </div>
